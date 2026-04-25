@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Publicacion {
+class Publicacion {
 	private static int consecutivo = 1;
 	private int codigoPublicacion;
 	private String titulo;
@@ -21,7 +21,7 @@ public class Publicacion {
 		fechaPublicacion = LocalDateTime.now();
 		comentarios = new ArrayList<Comentario>();
 	}
-
+	
 	public int getCodigoPublicacion() {
 		return codigoPublicacion;
 	}
@@ -43,7 +43,8 @@ public class Publicacion {
 	}
 	
 	public String toString() {
-		String resultado = "\n" + titulo + "\n";
+		String resultado = "Publicación número " + codigoPublicacion;
+		resultado += "\n" + titulo + "\n";
 		resultado += "\nCreador: " + nombreCreador + "\n";
 		resultado += "\n" + fechaPublicacion.toString() + "\n";
 		resultado += "\n" + texto + "\n";
