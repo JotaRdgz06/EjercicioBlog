@@ -8,6 +8,7 @@ public class interfazBlog {
 
 	private static controladora controladora;
 	private static Scanner scanner = new Scanner(System.in);
+	private static int blogATrabajar = 0;
 	
 	public static void main(String[] args) {
 		controladora = new controladora();
@@ -23,13 +24,21 @@ public class interfazBlog {
 
             switch (opcion) {
                 case 1:
-                    crearBlog();
+				try {
+					crearBlog();
+				} catch (Exception e) {
+					System.out.println("Error: " + e);
+				}
                     break;
                 case 2:
                     trabajarConBlog();
                     break;
                 case 3:
-                    borrarBlog();
+				try {
+					borrarBlog();
+				} catch (Exception e) {
+					System.out.println("Error: " + e);
+				}
                     break;
                 case 4:
                     System.out.println("Chau :>");
@@ -67,8 +76,129 @@ public class interfazBlog {
 		System.out.println(menu);
 	}
 	
-	public static void trabajarConBlog() {
+	public static void trabajarConBlog() throws Exception{
+		Map<Integer, String> blogs = controladora.obtenerBlogs();
 		
+		if (blogs.isEmpty())
+			throw new Exception("No hay blogs");
+		
+		for (Integer id : blogs.keySet()) {
+	        String nombre = blogs.get(id);
+	        System.out.println("ID: " + id + "\nBlog: " + nombre);
+	    }
+		
+		System.out.print("Ingrese el código del blog con el que desea trabajar: ");
+        int BlogATrabajar = scanner.nextInt();
+        
+        while (!blogs.containsKey(BlogATrabajar)) {
+            throw new Exception("no existe un blog con ese codigo, intente de nuevo");
+        }
+        int opcion = 0;
+        while (opcion != 3) {
+            menuBlog();
+
+            System.out.print("Ingrese una opción: ");
+            opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    crearPublicacion();
+                    break;
+                case 2:
+                    verPubliYComent();
+                    break;
+                case 3:
+                    break;
+                default:
+                    throw new Exception("Ingrese un número entre 1 y 3.");
+            }
+        }
+        
+	}
+	
+	public static String menuBlog() {
+		String menublog = "Menú de blog, elija una de las siguientes acciones: \n";
+		menublog += "\n1. Crear publicacion";
+		menublog += "\n2. Ver publicacion y comentarios";
+		menublog += "\n3. Regresar";
+		return menublog;
+    }
+    
+    public static void crearPublicacion() throws Exception{
+    	System.out.println("Ingrese el titulo de la publicacion: ");
+    	String titulo = scanner.nextLine();
+    	System.out.println("Ingrese el texto de la publicacion: ");
+    	String texto = scanner.nextLine();
+    	System.out.println("Ingrese su nombre: ");
+    	String nombre = scanner.nextLine();
+    	
+    	if (titulo.isEmpty())
+            throw new Exception("nombre no puede estar vacio");
+        if (texto.isEmpty())
+        	throw new Exception("texto no puede estar vacio");
+        if (nombre.isEmpty())
+        	throw new Exception("nombre no puede estar vacio");
+        	
+       	controladora.crearPublicacion(blogATrabajar, titulo, texto, nombre);
+    }
+    
+    public static void verPubliYComent() {
+    	try {
+			Map<Integer, String> titulos = controladora.obtenerPublicaciones(blogATrabajar);
+			
+			if (titulos.isEmpty())
+            	throw new Exception("Este blog no tiene publicaciones");
+            
+            for (Integer id : titulos.keySet()) {
+	        	String nombre = titulos.get(id);
+	        	System.out.println("ID: " + id + "\nTitulo: " + nombre);
+	    	}
+	    	
+	    	System.out.println("Ingrese el numero de la publicacion que desea ver: ");
+	    	int publicacionATrabajar = scanner.nextInt();
+	    	
+	    	if (!titulos.containsKey(publicacionATrabajar))
+	    		throw new Exception("No hay una publicacion con esa id");
+	    	
+	    	String publicacion = controladora.obtenerPublicacion(blogATrabajar, publicacionATrabajar);
+        	System.out.println(publicacion);
+        	
+        	int opcion = 0;
+        	while (opcion != 3){
+        		System.out.println(menuPublicacion());
+        		opcion = scanner.nextInt();	
+        	}
+        	
+        	switch(opcion) {
+        		case 1:
+        			crearComentario();
+        			break; 
+        		case 2:
+        			borrarComentario();
+        			break;
+        		case 3:
+        			break;
+        	}
+		} catch (Exception e) {
+			System.out.println("Error: "+ e);
+		}
+    }
+	
+	public static String menuPublicacion() {
+		String menu = "Menú publicacion: \n";
+		menu += "\n1. Crear comentario";
+		menu += "\n2. Borrar comentario";
+		menu += "\n3. Regresar";
+		return menu;
+	}
+	
+	public static void crearComentario() {
+		System.out.println("Ingrese su email: ");
+		String email = scanner.nextLine();
+		System.out.println("Ingrese su ip: ");
+		String ip = scanner.nextLine();
+		System.out.println("Ingrese el texto de su comentario: ");
+		String texto = scanner.nextLine();
 	}
 	
 	public static void borrarBlog() throws Exception{
@@ -84,7 +214,7 @@ public class interfazBlog {
         try {
             controladora.borrarBlog(codigo);
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error: " + e);
         }
 	}
 	
