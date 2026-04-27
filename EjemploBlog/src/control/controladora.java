@@ -35,4 +35,14 @@ public class controladora {
 		Blog b = blogs.get(codigoBlog);
 		b.crearPublicacion(titulo, texto, nombre);
 	}
+	public Map<Integer, String> obtenerPublicaciones(int codigoBlog) throws Exception{
+		if (!blogs.containsKey(codigoBlog)) {
+			throw new Exception()
+		}
+		Map<Integer, String> resultado = new TreeMap<Integer, String>();
+		for (Blog b : blogs.values()) {
+			resultado.put(b.getCodigo(), b.getNombre());
+		}
+		return resultado;
+	}
 }
