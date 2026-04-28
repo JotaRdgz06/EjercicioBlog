@@ -63,9 +63,9 @@ class Publicacion {
 		comentarios.add(c);
 	}
 	public void borrarComentario(int posicion) throws Exception {
-		if (posicion <= 0 || posicion >= comentarios.size()) {
+		if (posicion < 1 || posicion > comentarios.size()) {
 			throw new Exception("Comentario no valido");
 		}
-		comentarios.remove(posicion);
+		comentarios.remove(posicion - 1);
 	}
 }
